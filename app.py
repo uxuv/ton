@@ -14,15 +14,11 @@ async def start(client, message):
     p = float(requests.get(url).json()["price"])
     await message.reply_text(f"{p:.2f}$")
 
-async def price_loop():
-    while True:
-        p = float(requests.get(url).json()["price"])
-        await app.send_message(channel, f"{p:.2f}$")
-        await asyncio.sleep(300)
+async def run():
+    async with app:
+        while True:
+            p = float(requests.get(url).json()["price"])
+            await app.send_message(channel, f"{p:.2f}$")
+            await asyncio.sleep(300)
 
-async def main():
-    await app.start()
-    asyncio.create_task(price_loop())  # تشغيل الحلقة بشكل غير متزامن
-    await app.idle()  # يبقي البوت يعمل
-
-asyncio.run(main())
+app.run(run())
